@@ -114,6 +114,8 @@ $result = $stmt->get_result();
         <a href="cadastrar_usuario.php" class="btn btn-cadastrar-usuario">Cadastrar Usuário</a>
         <a href="cadastro_paciente.php" class="btn btn-cadastrar">Cadastrar Paciente</a>
         <a href="visualizar_pacientes.php" class="btn btn-visualizar">Visualizar Pacientes</a>
+        <a href="visualizar_pacientes_professor.php" class="btn btn-visualizar">Visualizar Pacientes por Aluno</a>
+        <a href="consulta.php" class="btn btn-visualizar">Pesquisar Paciente</a>
         <table>
             <tr>
                 <th>ID</th>

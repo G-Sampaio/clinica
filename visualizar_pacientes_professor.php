@@ -3,7 +3,7 @@ session_start();
 include('db.php');
 
 // Verifica se o usuário está logado e é aluno
-if (!isset($_SESSION['user']) || $_SESSION['user']['tipo'] !== 'aluno') {
+if (!isset($_SESSION['user']) || $_SESSION['user']['tipo'] !== 'professor') {
     header('Location: dashboard.php');
     exit;
 }

@@ -15,14 +15,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $endereco = $_POST['endereco'];
     $telefone = $_POST['telefone'];
     $email = $_POST['email'];
+    $cidade = $_POST['cidade'];
+    $estado = $_POST['estado'];
+    $dataInicio = $_POST['dataInicio'];
     $contato_emergencia = $_POST['contato_emergencia'];
     $escolaridade = $_POST['escolaridade'];
-    $ocupacao= $_POST['ocupacao'];
-    
+    $ocupacao = $_POST['ocupacao'];
+    $necessidadeEspecial = $_POST['necessidadeEspecial'];
+    $histFamiliar = $_POST['histFamiliar'];
+    $histSocial = $_POST['histSocial'];
+    $finais = $_POST['finais'];
+
     // Inserir paciente no banco de dados
-    $stmt = $conn->prepare("INSERT INTO pacientes (nome, data_nasc, genero, endereco, telefone, email, contato_emergencia, escolaridade, ocupacao, aluno_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emergencia, $escolaridade, $ocupacao, $_SESSION['user']['id']);
+    $stmt = $conn->prepare("INSERT INTO pacientes (
+        nome, data_nasc, genero, endereco, telefone, email, cidade, estado, dataInicio, contato_emergencia, escolaridade,
+        ocupacao, necessidadeEspecial, histFamiliar, histSocial, finais, aluno_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     
+    if (!$stmt) {
+        die("Erro ao preparar a consulta: " . $conn->error);
+    }
+
+    $stmt->bind_param(
+        "ssssssssssssssssi",
+        $nome, $data_nasc, $genero, $endereco, $telefone, $email, $cidade, $estado, $dataInicio, $contato_emergencia,
+        $escolaridade, $ocupacao, $necessidadeEspecial, $histFamiliar, $histSocial, $finais, $_SESSION['user']['id']
+    );
+
     if ($stmt->execute()) {
         echo "Paciente cadastrado com sucesso!";
     } else {
@@ -133,9 +152,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <option value="feminino">Feminino</option>
             <option value="outro">Outro</option>
         </select><br>
-        
+
         <label for="endereco">Endereço:</label>
         <input type="text" id="endereco" name="endereco" required><br>
+        
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" name="cidade" required><br>
+
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" name="estado" required><br>
+
+        <label for="dataInicio">Data de Início:</label>
+        <input type="date" id="dataInicio" name="dataInicio" required><br>
         
         <label for="telefone">Telefone:</label>
         <input type="text" id="telefone" name="telefone" required><br>
@@ -143,20 +171,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
         
-        <label for="contato_emerg">Contato de Emergência:</label>
+        <label for="contato_emergencia">Contato de Emergência:</label>
         <input type="text" id="contato_emergencia" name="contato_emergencia" required><br>
         
         <label for="escolaridade">Escolaridade:</label>
-        <textarea id="escolaridade" name="escolaridade" required></textarea><br>
+        <input type="text" id="escolaridade" name="escolaridade" required><br>
         
         <label for="ocupacao">Ocupação:</label>
-        <textarea id="ocupacao" name="ocupacao" required></textarea><br>
+        <input type="text" id="ocupacao" name="ocupacao" required><br>
         
-        <button type="submit">Cadastrar Paciente</button>
+        <label for="necessidadeEspecial">Necessidade Especial:</label>
+        <textarea id="necessidadeEspecial" name="necessidadeEspecial"></textarea><br>
 
+        <label for="histFamiliar">Histórico Familiar:</label>
+        <textarea id="histFamiliar" name="histFamiliar"></textarea><br>
+
+        <label for="histSocial">Histórico Social:</label>
+        <textarea id="histSocial" name="histSocial"></textarea><br>
+
+        <label for="finais">Finais:</label>
+        <textarea id="finais" name="finais"></textarea><br>
+
+        <button type="submit">Cadastrar Paciente</button>
     </form>
-    <br>
     <button onclick="window.location.href='dashboard.php'">Voltar ao Dashboard</button>
 </body>
 </html>
-
