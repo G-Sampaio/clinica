@@ -30,15 +30,21 @@ if (isset($_GET['id'])) {
         $endereco = $_POST['endereco'];
         $telefone = $_POST['telefone'];
         $email = $_POST['email'];
+        $cidade = $_POST['cidade'];
+        $estado = $_POST['estado'];
+        $dataInicio = $_POST['dataInicio'];
         $contato_emergencia = $_POST['contato_emergencia'];
         $escolaridade = $_POST['escolaridade'];
         $ocupacao = $_POST['ocupacao'];
+        $necessidadeEspecial = $_POST['necessidadeEspecial'];
+        $histFamiliar = $_POST['histFamiliar'];
+        $histSocial = $_POST['histSocial'];
+        $finais = $_POST['finais'];
 
         // Atualizar dados do paciente
-        $stmt = $conn->prepare("UPDATE pacientes SET nome = ?, data_nasc = ?, genero = ?, endereco = ?, telefone = ?, email = ?, contato_emergencia= ?, escolaridade = ?, ocupacao = ? WHERE id = ?");
-        $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emergencia, $escolaridade, $ocupacao, $paciente_id);
+        $stmt = $conn->prepare("UPDATE pacientes SET nome = ?, data_nasc = ?, genero = ?, endereco = ?, telefone = ?, email = ?, cidade = ?, estado = ?, dataInicio = ?, contato_emergencia = ?, escolaridade = ?, ocupacao = ?, necessidadeEspecial = ?, histFamiliar = ?, histSocial = ?, finais = ? WHERE id = ?");
+        $stmt->bind_param("ssssssssssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $cidade, $estado, $dataInicio, $contato_emergencia, $escolaridade, $ocupacao, $necessidadeEspecial, $histFamiliar, $histSocial, $finais, $paciente_id);
 
-        
         if ($stmt->execute()) {
             echo "Paciente atualizado com sucesso!";
             header('Location: visualizar_pacientes.php');
@@ -146,6 +152,15 @@ if (isset($_GET['id'])) {
             <label for="endereco">Endereço:</label>
             <input type="text" id="endereco" name="endereco" value="<?= $paciente['endereco']; ?>" required><br>
 
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" name="cidade" value="<?= $paciente['cidade']; ?>" required><br>
+
+            <label for="estado">Estado:</label>
+            <input type="text" id="estado" name="estado" value="<?= $paciente['estado']; ?>" required><br>
+
+            <label for="dataInicio">Data de Início:</label>
+            <input type="date" id="dataInicio" name="dataInicio" value="<?= $paciente['dataInicio']; ?>" required><br>
+
             <label for="telefone">Telefone:</label>
             <input type="text" id="telefone" name="telefone" value="<?= $paciente['telefone']; ?>" required><br>
 
@@ -160,6 +175,18 @@ if (isset($_GET['id'])) {
 
             <label for="ocupacao">Ocupação:</label>
             <textarea id="ocupacao" name="ocupacao" required><?= $paciente['ocupacao']; ?></textarea><br>
+
+            <label for="necessidadeEspecial">Necessidade Especial:</label>
+            <textarea id="necessidadeEspecial" name="necessidadeEspecial"><?= $paciente['necessidadeEspecial']; ?></textarea><br>
+
+            <label for="histFamiliar">Histórico Familiar:</label>
+            <textarea id="histFamiliar" name="histFamiliar"><?= $paciente['histFamiliar']; ?></textarea><br>
+
+            <label for="histSocial">Histórico Social:</label>
+            <textarea id="histSocial" name="histSocial"><?= $paciente['histSocial']; ?></textarea><br>
+
+            <label for="finais">Finais:</label>
+            <textarea id="finais" name="finais"><?= $paciente['finais']; ?></textarea><br>
 
             <button type="submit">Atualizar Paciente</button>
         </form>
