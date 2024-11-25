@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: auto;
             margin-top: 5px;
             margin-bottom: 15px;
             border: 1px solid #ccc;

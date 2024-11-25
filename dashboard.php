@@ -10,6 +10,8 @@ if (!isset($_SESSION['user'])) {
 
 // Recupera o nome do usuário da sessão, se disponível
 $nome_usuario = isset($_SESSION['nome']) ? $_SESSION['nome'] : 'Usuário';
+$tipo_usuario = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : 'aluno'; 
+
 
 // Exibe os usuários cadastrados
 $stmt = $conn->prepare("SELECT id, nome, email, tipo FROM usuarios");
@@ -111,11 +113,24 @@ $result = $stmt->get_result();
     </div>
     <div class="container">
         <h2>Usuários Cadastrados</h2>
+        <?php if ($tipo_usuario == 'admin'): ?>
         <a href="cadastrar_usuario.php" class="btn btn-cadastrar-usuario">Cadastrar Usuário</a>
+    <?php elseif ($tipo_usuario == 'professor'): ?>
+        <a href="visualizar_pacientes_professor.php" class="btn btn-visualizar">Visualizar Pacientes por Aluno</a>
+    <?php elseif ($tipo_usuario == 'aluno'): ?>
         <a href="cadastro_paciente.php" class="btn btn-cadastrar">Cadastrar Paciente</a>
         <a href="visualizar_pacientes.php" class="btn btn-visualizar">Visualizar Pacientes</a>
-        <a href="visualizar_pacientes_professor.php" class="btn btn-visualizar">Visualizar Pacientes por Aluno</a>
         <a href="consulta.php" class="btn btn-visualizar">Pesquisar Paciente</a>
+    <?php endif; ?>
+
+    <!-- Apenas admin pode ver a lista de usuários -->
+    <?php if ($tipo_usuario == 'admin'): ?>
+            <h2>Usuários Cadastrados</h2>
+            <?php
+            $stmt = $conn->prepare("SELECT id, nome, email, tipo FROM usuarios");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            ?>
         <table>
             <tr>
                 <th>ID</th>
@@ -137,6 +152,7 @@ $result = $stmt->get_result();
                 </tr>
             <?php endwhile; ?>
         </table>
+        <?php endif; ?>
     </div>
 </body>
 </html>
