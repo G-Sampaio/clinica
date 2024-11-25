@@ -8,11 +8,15 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+// Recupera o nome do usuário da sessão, se disponível
+$nome_usuario = isset($_SESSION['nome']) ? $_SESSION['nome'] : 'Usuário';
+
 // Exibe os usuários cadastrados
 $stmt = $conn->prepare("SELECT id, nome, email, tipo FROM usuarios");
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -89,17 +93,27 @@ $result = $stmt->get_result();
         .btn-delete:hover {
             background-color: #da190b;
         }
+        .btn-cadastrar, .btn-visualizar, .btn-cadastrar-usuario {
+            background-color: #4CAF50;
+            margin: 10px 0;
+        }
+        .btn-cadastrar:hover, .btn-visualizar:hover, .btn-cadastrar-usuario:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        Dashboard
+        Bem-vindo, <?= htmlspecialchars($nome_usuario); ?>
         <div class="logout">
             <a href="logout.php">Sair</a>
         </div>
     </div>
     <div class="container">
         <h2>Usuários Cadastrados</h2>
+        <a href="cadastrar_usuario.php" class="btn btn-cadastrar-usuario">Cadastrar Usuário</a>
+        <a href="cadastro_paciente.php" class="btn btn-cadastrar">Cadastrar Paciente</a>
+        <a href="visualizar_pacientes.php" class="btn btn-visualizar">Visualizar Pacientes</a>
         <table>
             <tr>
                 <th>ID</th>
@@ -124,4 +138,3 @@ $result = $stmt->get_result();
     </div>
 </body>
 </html>
-

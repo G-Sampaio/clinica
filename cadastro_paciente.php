@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('db.php');
+include('db.php');
 
-// Verificar se o usuário é um aluno
-if ($_SESSION['tipo'] != 'admin') {
+// Verifica se o usuário está logado e é aluno
+if (!isset($_SESSION['user']) || $_SESSION['user']['tipo'] !== 'aluno') {
     header('Location: dashboard.php');
     exit;
 }
@@ -15,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $endereco = $_POST['endereco'];
     $telefone = $_POST['telefone'];
     $email = $_POST['email'];
-    $contato_emerg = $_POST['contato_emerg'];
-    $hist_familiar = $_POST['hist_familiar'];
-    $hist_social = $_POST['hist_social'];
+    $contato_emergencia = $_POST['contato_emergencia'];
+    $escolaridade = $_POST['escolaridade'];
+    $ocupacao= $_POST['ocupacao'];
     
     // Inserir paciente no banco de dados
-    $stmt = $con->prepare("INSERT INTO pacientes (nome, data_nasc, genero, endereco, telefone, email, contato_emerg, hist_familiar, hist_social, aluno_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emerg, $hist_familiar, $hist_social, $_SESSION['id']);
+    $stmt = $conn->prepare("INSERT INTO pacientes (nome, data_nasc, genero, endereco, telefone, email, contato_emergencia, escolaridade, ocupacao, aluno_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emergencia, $escolaridade, $ocupacao, $_SESSION['user']['id']);
     
     if ($stmt->execute()) {
         echo "Paciente cadastrado com sucesso!";
@@ -37,6 +37,86 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Paciente</title>
+    <style>
+        /* Definindo a fonte padrão */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Estilo do título */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Estilo do formulário */
+        form {
+            width: 60%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"], input[type="email"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilo para o botão voltar */
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Cadastrar Paciente</h1>
@@ -64,15 +144,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="email" id="email" name="email" required><br>
         
         <label for="contato_emerg">Contato de Emergência:</label>
-        <input type="text" id="contato_emerg" name="contato_emerg" required><br>
+        <input type="text" id="contato_emergencia" name="contato_emergencia" required><br>
         
-        <label for="hist_familiar">Histórico Familiar:</label>
-        <textarea id="hist_familiar" name="hist_familiar" required></textarea><br>
+        <label for="escolaridade">Escolaridade:</label>
+        <textarea id="escolaridade" name="escolaridade" required></textarea><br>
         
-        <label for="hist_social">Histórico Social:</label>
-        <textarea id="hist_social" name="hist_social" required></textarea><br>
+        <label for="ocupacao">Ocupação:</label>
+        <textarea id="ocupacao" name="ocupacao" required></textarea><br>
         
         <button type="submit">Cadastrar Paciente</button>
+
     </form>
+    <br>
+    <button onclick="window.location.href='dashboard.php'">Voltar ao Dashboard</button>
 </body>
 </html>
+

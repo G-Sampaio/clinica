@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('conexao.php');
+include('db.php');
 
-// Verificar se o usuário é um aluno
-if ($_SESSION['tipo'] != 'aluno') {
+// Verifica se o usuário está logado e é aluno
+if (!isset($_SESSION['user']) || $_SESSION['user']['tipo'] !== 'aluno') {
     header('Location: dashboard.php');
     exit;
 }
@@ -12,8 +12,8 @@ if (isset($_GET['id'])) {
     $paciente_id = $_GET['id'];
 
     // Obter dados do paciente para edição
-    $stmt = $con->prepare("SELECT * FROM pacientes WHERE id = ? AND aluno_id = ?");
-    $stmt->bind_param("ii", $paciente_id, $_SESSION['id']);
+    $stmt = $conn->prepare("SELECT * FROM pacientes WHERE id = ? AND aluno_id = ?");
+    $stmt->bind_param("ii", $paciente_id, $_SESSION['user']['id']);
     $stmt->execute();
     $result = $stmt->get_result();
     $paciente = $result->fetch_assoc();
@@ -30,16 +30,18 @@ if (isset($_GET['id'])) {
         $endereco = $_POST['endereco'];
         $telefone = $_POST['telefone'];
         $email = $_POST['email'];
-        $contato_emerg = $_POST['contato_emerg'];
-        $hist_familiar = $_POST['hist_familiar'];
-        $hist_social = $_POST['hist_social'];
+        $contato_emergencia = $_POST['contato_emergencia'];
+        $escolaridade = $_POST['escolaridade'];
+        $ocupacao = $_POST['escolaridade'];
 
         // Atualizar dados do paciente
-        $stmt = $con->prepare("UPDATE pacientes SET nome = ?, data_nasc = ?, genero = ?, endereco = ?, telefone = ?, email = ?, contato_emerg = ?, hist_familiar = ?, hist_social = ? WHERE id = ?");
-        $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emerg, $hist_familiar, $hist_social, $paciente_id);
+        $stmt = $conn->prepare("UPDATE pacientes SET nome = ?, data_nasc = ?, genero = ?, endereco = ?, telefone = ?, email = ?, contato_emergencia= ?, escolaridade = ?, ocupacao = ? WHERE id = ?");
+        $stmt->bind_param("sssssssssi", $nome, $data_nasc, $genero, $endereco, $telefone, $email, $contato_emergencia, $escolaridade, $ocupacao, $paciente_id);
+
         
         if ($stmt->execute()) {
             echo "Paciente atualizado com sucesso!";
+            header('Location: visualizar_pacientes.php');
         } else {
             echo "Erro ao atualizar paciente: " . $stmt->error;
         }
@@ -82,16 +84,18 @@ if (isset($_GET['id'])) {
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?= $paciente['email']; ?>" required><br>
 
-        <label for="contato_emerg">Contato de Emergência:</label>
-        <input type="text" id="contato_emerg" name="contato_emerg" value="<?= $paciente['contato_emerg']; ?>" required><br>
+        <label for="contato_emergencia">Contato de Emergência:</label>
+        <input type="text" id="contato_emergencia" name="contato_emergencia" value="<?= $paciente['contato_emergencia']; ?>" required><br>
 
-        <label for="hist_familiar">Histórico Familiar:</label>
-        <textarea id="hist_familiar" name="hist_familiar" required><?= $paciente['hist_familiar']; ?></textarea><br>
+        <label for="escolaridade">Escolaridade:</label>
+        <textarea id="escolaridade" name="escolaridade" required><?= $paciente['escolaridade']; ?></textarea><br>
 
-        <label for="hist_social">Histórico Social:</label>
-        <textarea id="hist_social" name="hist_social" required><?= $paciente['hist_social']; ?></textarea><br>
+        <label for="ocupacao">Ocupacao:</label>
+        <textarea id="ocupacao" name="ocupacao" required><?= $paciente['ocupacao']; ?></textarea><br>
 
         <button type="submit">Atualizar Paciente</button>
     </form>
+    <br>
+    <button onclick="window.location.href='dashboard.php'">Voltar ao Dashboard</button>
 </body>
 </html>
